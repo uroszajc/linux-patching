@@ -10,9 +10,9 @@
           update_cache: yes
           cache_valid_time: 3600
 
-      - name: Remove dependencies that are no longer required - First Run
-        apt:
-          autoremove: yes
+      #- name: Remove dependencies that are no longer required - First Run
+      #  apt:
+      #    autoremove: yes
 
       #- name: Check if there are available updates
       #  command: /usr/lib/update-notifier/apt-check --package-names
