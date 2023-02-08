@@ -1,0 +1,37 @@
+---
+- name: Update APT cache
+  hosts: all
+  tasks:
+  - name: Ubuntu update Stuff
+    block:
+      - name: Update APT cache
+        apt:
+          update_cache: yes
+          cache_valid_time: 3600
+
+      - name: Remove dependencies that are no longer required - First Run
+        apt:
+          autoremove: yes
+
+      #- name: Check if there are available updates
+      #  command: /usr/lib/update-notifier/apt-check --package-names
+      #  register: pkg_list
+
+      - name: Perform upgrade of all packages to the latest version
+        apt:
+          upgrade: yes
+        #when: pkg_list.stderr != ""
+
+      - name: Remove dependencies that are no longer required - Second Run
+        apt:
+          autoremove: yes
+        
+      - name: Check if a reboot is required
+        stat: path=/var/run/reboot-required get_md5=no
+        register: reboot_flag
+
+      - name: Reboot the server if needed
+        reboot:
+          reboot_timeout: 300
+        when: reboot_flag.stat.exists == true
+    when: ansible_distribution_file_variety == "Debian"
