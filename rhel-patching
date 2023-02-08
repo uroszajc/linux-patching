@@ -1,0 +1,33 @@
+- name: update and Upgrade
+  hosts: all
+  become: yes
+  tasks:
+  - name: RHEL-Type updates
+    block: 
+      - name: ensure yum-utils are installed
+        ansible.builtin.dnf:
+         name: yum-utils
+         state: present
+
+      - name: Upgrade all packages
+        ansible.builtin.yum:
+          name: "*"
+          state: latest
+
+      - name: check if reboot required
+        become: yes
+        ansible.builtin.command: "/usr/bin/dnf needs-restarting -r"
+        register: reboot_needed
+        ignore_errors: True
+    
+      - name: Update required status output
+        debug:
+          var: reboot_needed.stdout_lines
+
+       #add some check for reboot stuff 
+      - name: Reboot if updates require it
+        ansible.builtin.reboot:
+          reboot_timeout: 3600
+        when: reboot_needed.stdout.find('Reboot is required') != -1
+        
+    when: ansible_distribution_file_path == "/etc/redhat-release"
