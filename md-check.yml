@@ -17,8 +17,8 @@
         mail:
          host: 10.0.0.4
          port: 25
-         to: uzajc@hotmail.com
-         from: mrszajc@bigpond.com
+         to: uros@zajc.net
+         from: uzajc@hotmail.com
          subject: Ansible MDADM Alert!!!
          body: |
           This is an ansible test email from {{ ansible_hostname }}
@@ -30,8 +30,8 @@
         mail:
          host: 10.0.0.4
          port: 25
-         to: uzajc@hotmail.com
-         from: mrszajc@bigpond.com
+         to: uros@zajc.net
+         from: uzajc@hotmail.com
          subject: Ansible MDADM Alert!!!
          body: |
           This is an ansible test email from {{ ansible_hostname }}
