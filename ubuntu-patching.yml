@@ -14,9 +14,9 @@
       #  apt:
       #    autoremove: yes
 
-      #- name: Check if there are available updates
-      #  command: /usr/lib/update-notifier/apt-check --package-names
-      #  register: pkg_list
+      - name: Check if there are available updates
+        command: /usr/lib/update-notifier/apt-check --package-names
+        register: pkg_list
 
       - name: Perform upgrade of all packages to the latest version
         apt:
