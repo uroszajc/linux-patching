@@ -1,0 +1,43 @@
+- name: Get mdadm status and send an email
+  hosts: all
+  tasks:
+  - name: check if MD devices exist
+    stat:
+      path: /dev/md
+    register: md_exists 
+  - name: MDADM checks
+    block:
+      - name: mdadm check
+        become: yes
+        command: >
+         mdadm -D /dev/md0 
+        register: md_status
+
+      - name: Send an email if there is a failure registered
+        mail:
+         host: 10.0.0.4
+         port: 25
+         to: uzajc@hotmail.com
+         from: mrszajc@bigpond.com
+         subject: Ansible MDADM Alert!!!
+         body: |
+          This is an ansible test email from {{ ansible_hostname }}
+          Mdadm status:
+          {{ md_status }}
+        delegate_to: home-pc
+        when: '"FAILURE" in md_status.stdout[0]'
+      - name: Send an email if there is a faulty device registered
+        mail:
+         host: 10.0.0.4
+         port: 25
+         to: uzajc@hotmail.com
+         from: mrszajc@bigpond.com
+         subject: Ansible MDADM Alert!!!
+         body: |
+          This is an ansible test email from {{ ansible_hostname }}
+          Mdadm status:
+          {{ md_status }}
+        delegate_to: home-pc
+        when: '"degraded" in md_status.stdout[0]'  
+    when: md_exists.stat.exists
+ 
